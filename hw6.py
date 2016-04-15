@@ -2,6 +2,87 @@ import sys
 import csv
 
 def method1_same_movie_idx(input_list):
+    movie_id = input_list[1]
+    actor_low = input_list[2]
+    if actor_low == "*":
+        test_low = 0
+    else:
+        test_low = int(actor_low)
+    print actor_low
+    actor_high = input_list[3]
+    prev_id = 0
+    next_file = ""
+    leaf_node = ""
+    page_count = 0
+    list_actors_leaves = []
+    # list of page numbers
+    list_actors = []
+    # set of actor ids
+    node_dir = "movieroles_ma_idx\\"
+    with open("movieroles_ma_idx\\root.txt", 'r') as root:
+        root_node = csv.DictReader(root, delimiter = "," ,fieldnames = ["movieid","actorid","pageid"])
+        page_count+=1
+        for row in root_node:
+            if(row["movieid"] != "internal"):
+                if (int(movie_id) <= int(row["movieid"]) and int(movie_id) > prev_id) :
+                   # print next_node
+                    next_file = node_dir + row["pageid"]
+                    print next_file
+                prev_id = int(row["movieid"])
+    with open(next_file, 'r') as stem:
+        stem_node = csv.DictReader(stem,delimiter = ",", fieldnames = ["movieid","actorid","pageid"])
+        page_count +=1
+        for row in stem_node:
+            if row["movieid"] != "internal" and row["movieid"] != "int2.txt" :
+                if (int(movie_id) <= int(row["movieid"]) and int(movie_id) > prev_id ):
+                    next_file = node_dir + row["pageid"]
+                    print next_file
+                prev_id = int(row["movieid"])
+    with open(next_file, 'r') as leaf:
+        leaf_node = csv.DictReader(leaf, delimiter = ",", fieldnames = ["movieid","actorid", "pageid"])
+        page_count +=1
+        for row in leaf_node:
+            if(row["movieid"] != "leaf"):
+                if not (row["movieid"].isdigit()) :
+                    next_file = node_dir + row["movieid"]
+                else:
+                    if int(movie_id) == int(row["movieid"]):
+                        if  actor_high == "*":
+                            if  int(row["actorid"]) >= int(test_low):
+                                list_actors.append(row["actorid"])
+                                list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
+                        else:
+                            if  int(row["actorid"]) >= int(test_low) and int(row["actorid"] <= int(actor_high)) :
+                                list_actors.append(row["actorid"])
+                                list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
+
+    
+    with open(next_file, 'r') as leaf:
+        leaf_node = csv.DictReader(leaf, delimiter = ",", fieldnames = ["movieid","actorid", "pageid"])
+        page_count +=1
+        for row in leaf_node:
+            if(row["movieid"] != "leaf"):
+                if not (row["movieid"].isdigit()) :
+                    next_file = node_dir + row["movieid"]
+                else:
+                    if int(movie_id) == int(row["movieid"]):
+                        if  actor_high == "*":
+                            if  int(row["actorid"]) >= int(test_low):
+                                list_actors.append(row["actorid"])
+                                list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
+                        else:
+                            if  int(row["actorid"]) >= int(test_low) and int(row["actorid"] <= int(actor_high)) :
+                                list_actors.append(row["actorid"])
+                                list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
+                                
+    
+    print list_actors_leaves,page_count
+                       
+                        
+               
+
+
+
     return 0
 
 def method1_range_movie_idx(input_list):
