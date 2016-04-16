@@ -80,23 +80,12 @@ def method1_same_movie_idx(input_list):
                                     list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                                     
 
-    print list_actors,page_count
-    return [list_actors,page_count]
+    #print list_actors,page_count
+    return list_actors,page_count
 
 
 def method1_range_movie_idx(input_list):
-    page_count = 0
-    for i in range(1, 2014):
-        if len(input_list) == 0:
-            break
-        page_count +=1
-        filename = "actors_table\\page" + str(i)
-        with open(filename) as fin:
-            reader = reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
-            for row in reader:
-                if(row['id'] in input_list):
-                    input_list.remove(row['id'])
-    return page_count
+    return 0
 
 def method1_actor_idx(actor_list):
     output = []
@@ -110,7 +99,7 @@ def method1_actor_idx(actor_list):
             if(row['id'] != 'internal'):
                 if(int(actor_list[0]) <= int(row['id']) and int(actor_list[0]) > prev_id):
                     next_file = row['pageid']
-                    print next_file
+                    #print next_file
                 prev_id = int(row['id'])
 
 
@@ -126,7 +115,7 @@ def method1_actor_idx(actor_list):
                 if(row['id'] != 'internal'):
                     if(int(actor) <= int(row['id']) and int(actor) > prev_id):
                         next_file = row['pageid']
-                        print next_file
+                        #print next_file
                     prev_id = int(row['id'])
 
         idx_page_count+=1
@@ -136,25 +125,39 @@ def method1_actor_idx(actor_list):
             reader = csv.DictReader(fin, delimiter=",",fieldnames = ['id', 'pageid'])
             for row in reader:
                 if(row['id']!='leaf'):
-                    if(row['id'] == actor_list[0]):
+                    if(row['id'] in actor_list):
                         actor_page_id.append([row['id'], row['pageid']])
 
         idx_page_count+=1
 
 
-
+    print actor_page_id
     for idx, pages in enumerate(actor_page_id):
         tb_page_count+=1
         next_file = "actors_table\\page" + pages[1]+ '.txt'
         with open(next_file) as fin:
             reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
             for row in reader:
-                if(row['id'] == actor_page_id[idx][0]):
+                if(row['id'] in actor_page_id[idx]):
                     output.append(row)
 
 
     #print output, idx_page_count, tb_page_count
     return output, idx_page_count, tb_page_count
+
+def method2_actor_table(actor_list):
+    page_count = 0
+    for i in range(1, 2014):
+        if len(actor_list) == 0:
+            break
+        page_count +=1
+        filename = "actors_table\\page" + str(i) + ".txt"
+        with open(filename) as fin:
+            reader = reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
+            for row in reader:
+                if(row['id'] in actor_list):
+                    actor_list.remove(row['id'])
+    return page_count
 
 
 
@@ -170,6 +173,7 @@ def print_output(method_number,num_movieroles_idx,num_movieroles_table,num_actor
         print "    " + str(num_actors_table) + " pages actors_table"
 
 
+
 if __name__ == '__main__':
     if(len(sys.argv) != 2):
         print("incorrect amount of arguments")
@@ -178,16 +182,32 @@ if __name__ == '__main__':
         ifile = r.readlines()
 
     for line in ifile:
+        a_idx_page = 0
+        a_table_page = 0
+        m_idx_page = 0
+        m_table_page = 0
+        actor_list = []
+        actor_info_list = []
         input_list = []
         input_list = line.split(',')
 
         if(input_list[0] == input_list[1]):
-            method1_same_movie_idx(input_list)
+            actor_list, m_idx_page = method1_same_movie_idx(input_list)
         else:
             method1_range_movie_idx(input_list)
 
-        method1_actor_idx([input_list[2]])
-    print_output(1,1,1,1,1)
+        actor_info_list, a_idx_page, a_table_page = method1_actor_idx(actor_list)
+
+        print "Query: " + line
+        print "Results:\n"
+        for actor in actor_info_list:
+            print actor['name'] + " " + actor['surname'] + "(" + actor['atype'] + ")"
+        print
+        print_output(1,m_idx_page,m_table_page,a_idx_page,a_table_page)
+        a_table_page = 0
+        print_output(2,m_idx_page,m_table_page,0,method2_actor_table(actor_list))
+
+
 
 
 
