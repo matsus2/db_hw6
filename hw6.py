@@ -161,6 +161,10 @@ def method2_actor_table(actor_list):
 
 def method3_actor_table(input_list):
     page_count = 0
+    for i in range(1, 4018):
+        filename = "movieroles_table\\page" + str(i) + ".txt"
+        with open(filename) as fin:
+            reader = csv.DictReader(fin, delimiter=",",fieldnames = ['actorid', 'info_1', 'info_2', 'movieid', 'role'])
     return 
 
 
