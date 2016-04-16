@@ -130,7 +130,6 @@ def method1_actor_idx(actor_list):
 
         idx_page_count+=1
 
-
     print actor_page_id
     for idx, pages in enumerate(actor_page_id):
         tb_page_count+=1
@@ -147,17 +146,22 @@ def method1_actor_idx(actor_list):
 
 def method2_actor_table(actor_list):
     page_count = 0
-    for i in range(1, 2014):
+    for i in range(1, 2105):
         if len(actor_list) == 0:
             break
         page_count +=1
         filename = "actors_table\\page" + str(i) + ".txt"
         with open(filename) as fin:
-            reader = reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
+            reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
             for row in reader:
                 if(row['id'] in actor_list):
                     actor_list.remove(row['id'])
+
     return page_count
+
+def method3_actor_table(input_list):
+    page_count = 0
+    return 
 
 
 
