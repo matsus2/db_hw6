@@ -78,15 +78,22 @@ def method1_same_movie_idx(input_list):
     
     print list_actors_leaves,page_count
                        
-                        
-               
-
-
 
     return 0
 
 def method1_range_movie_idx(input_list):
-    return 0
+    page_count = 0
+    for i in range(1, 2014):
+        if len(input_list) == 0:
+            break
+        page_count +=1
+        filename = "actors_table\\page" + str(i)
+        with open(filename) as fin:
+            reader = reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
+            for row in reader:
+                if(row['id'] in input_list):
+                    input_list.remove(row['id'])
+    return page_count
 
 def method1_actor_idx(actor_list):
     output = []
@@ -134,6 +141,8 @@ def method1_actor_idx(actor_list):
     #print output, idx_page_count, tb_page_count
     return output, idx_page_count, tb_page_count
 
+
+def method2_actor_table()
 
 if __name__ == '__main__':
     if(len(sys.argv) != 2):
