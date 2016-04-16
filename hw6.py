@@ -8,7 +8,7 @@ def method1_same_movie_idx(input_list):
         test_low = 0
     else:
         test_low = int(actor_low)
-    print actor_low
+    #print actor_low
     actor_high = input_list[3]
     prev_id = 0
     next_file = ""
@@ -27,7 +27,7 @@ def method1_same_movie_idx(input_list):
                 if (int(movie_id) <= int(row["movieid"]) and int(movie_id) > prev_id) :
                    # print next_node
                     next_file = node_dir + row["pageid"]
-                    print next_file
+                    #print next_file
                 prev_id = int(row["movieid"])
     with open(next_file, 'r') as stem:
         stem_node = csv.DictReader(stem,delimiter = ",", fieldnames = ["movieid","actorid","pageid"])
@@ -36,7 +36,7 @@ def method1_same_movie_idx(input_list):
             if row["movieid"] != "internal" and row["movieid"] != "int2.txt" :
                 if (int(movie_id) <= int(row["movieid"]) and int(movie_id) > prev_id ):
                     next_file = node_dir + row["pageid"]
-                    print next_file
+                    #print next_file
                 prev_id = int(row["movieid"])
     with open(next_file, 'r') as leaf:
         leaf_node = csv.DictReader(leaf, delimiter = ",", fieldnames = ["movieid","actorid", "pageid"])
@@ -88,38 +88,41 @@ def method1_same_movie_idx(input_list):
 def method1_range_movie_idx(input_list):
     return 0
 
-def method1_actor_idx(actor_list, page_count):
+def method1_actor_idx(actor_list):
     output = []
     actor_page_id = []
 
-    with open("actors_id_idx\\root.txt") as fin:
-        reader = csv.DictReader(fin, delimiter=",",fieldnames = ['id', 'pageid'])
-        next_file = ' '
-        prev_id = 0
-        for row in reader:
-            if(row['id'] != 'internal'):
-                if(int(actor_list[0]) <= int(row['id']) and int(actor_list[0]) > prev_id):
-                    next_file = row['pageid']
-                    print next_file
-                prev_id = int(row['id'])
+    idx_page_count = 0
+    tb_page_count = 0
 
-    page_count+=1
+    for actor in  actor_list:
+        with open("actors_id_idx\\root.txt") as fin:
+            reader = csv.DictReader(fin, delimiter=",",fieldnames = ['id', 'pageid'])
+            next_file = ' '
+            prev_id = 0
+            for row in reader:
+                if(row['id'] != 'internal'):
+                    if(int(actor) <= int(row['id']) and int(actor) > prev_id):
+                        next_file = row['pageid']
+                        print next_file
+                    prev_id = int(row['id'])
 
-    next_file = "actors_id_idx\\" + next_file
-    with open(next_file) as fin:
-        reader = csv.DictReader(fin, delimiter=",",fieldnames = ['id', 'pageid'])
-        for row in reader:
-            if(row['id']!='leaf'):
-                if(row['id'] == actor_list[0]):
-                    actor_page_id.append([row['id'], row['pageid']])
+        idx_page_count+=1
 
-    page_count+=1
+        next_file = "actors_id_idx\\" + next_file
+        with open(next_file) as fin:
+            reader = csv.DictReader(fin, delimiter=",",fieldnames = ['id', 'pageid'])
+            for row in reader:
+                if(row['id']!='leaf'):
+                    if(row['id'] == actor_list[0]):
+                        actor_page_id.append([row['id'], row['pageid']])
 
-    print actor_page_id
+        idx_page_count+=1
+
 
 
     for idx, pages in enumerate(actor_page_id):
-        page_count+=1
+        tb_page_count+=1
         next_file = "actors_table\\page" + pages[1]+ '.txt'
         with open(next_file) as fin:
             reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
@@ -127,9 +130,9 @@ def method1_actor_idx(actor_list, page_count):
                 if(row['id'] == actor_page_id[idx][0]):
                     output.append(row)
 
-    print output
 
-    return output, page_count
+    #print output, idx_page_count, tb_page_count
+    return output, idx_page_count, tb_page_count
 
 
 if __name__ == '__main__':
