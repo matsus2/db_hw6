@@ -363,7 +363,7 @@ if __name__ == '__main__':
         print "Query: " + line
         print "Results (" + str(len(actor_info_list))  +  " total):\n"
         for actor in actor_info_list:
-            print actor['name'] + " " + actor['surname'] + "(" + actor['atype'] + ")"
+            print "    "+actor['name'] + " " + actor['surname'] + "(" + actor['atype'] + ")"
         print
         print_output(1,m_idx_page,m_table_page,a_idx_page,a_table_page)
         a_table_page = 0
