@@ -307,7 +307,7 @@ def method3_movie_table(input_list):
         with open(filename) as fin:
             reader = csv.DictReader(fin, delimiter=",",fieldnames = ['actorid', 'info_1', 'info_2', 'movieid', 'role'])
             for row in reader:
-                if(int(row['movieid']) in range(movie_test_low, movie_test_high+1)):
+                if(int(row['movieid']) >= movie_test_low and  row['movieid'] <= movie_test_high+1):
                     if(int(row['actorid']) in range(actor_test_low, actor_test_high+1)):
                         list_actors.append(row['actorid'])
 
