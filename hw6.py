@@ -176,9 +176,11 @@ def method1_range_movie_idx(input_list):
         with open(next_file, 'r') as leaf:
             leaf_node = csv.DictReader(leaf, delimiter = ",", fieldnames = ["movieid","actorid", "pageid"])
             page_count +=1
+            next_found = False
             for row in leaf_node:
                 if(row["movieid"] != "leaf"):
-                    if not (row["movieid"].isdigit()) :
+                    if not (row["movieid"].isdigit()):
+                        next_found = True
                         next_file = node_dir + row["movieid"]
                     else:
                         if int(row["movieid"]) in range(int(movie_test_low),int(movie_test_high) +1):
@@ -193,7 +195,8 @@ def method1_range_movie_idx(input_list):
                                     list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                         else:
                             found = False
-
+            if not next_found:
+                found = False
     #print list_actors,page_count
 
     return list(set(list_actors)),page_count
@@ -347,7 +350,7 @@ if __name__ == '__main__':
         #deletes the \n string at the end
         input_list[-1] = input_list[-1][:-1]
         
-        if(input_list[0] == input_list[1]):
+        if(input_list[0] == input_list[1] and input_list[0] != '*'):
             actor_list, m_idx_page = method1_same_movie_idx(input_list)
         else:
             actor_list, m_idx_page =  method1_range_movie_idx(input_list)
