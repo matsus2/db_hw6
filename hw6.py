@@ -30,6 +30,9 @@ def method1_same_movie_idx(input_list):
                     next_file = node_dir + row["pageid"]
                     #print next_file
                 prev_id = int(row["movieid"])
+
+    prev_id = 0
+    #print "stem " + next_file
     with open(next_file, 'r') as stem:
         stem_node = csv.DictReader(stem,delimiter = ",", fieldnames = ["movieid","actorid","pageid"])
         page_count +=1
@@ -37,14 +40,17 @@ def method1_same_movie_idx(input_list):
             if row["movieid"] != "internal" and row["movieid"] != "int2.txt" :
                 if (int(movie_id) <= int(row["movieid"]) and int(movie_id) > prev_id ):
                     next_file = node_dir + row["pageid"]
-                    #print next_file
+                    print "changed stem to leaf"
                 prev_id = int(row["movieid"])
+
+    #print "leaf " + next_file 
     with open(next_file, 'r') as leaf:
         leaf_node = csv.DictReader(leaf, delimiter = ",", fieldnames = ["movieid","actorid", "pageid"])
         page_count +=1
         for row in leaf_node:
             if(row["movieid"] != "leaf"):
                 if not (row["movieid"].isdigit()) :
+                    print "changed next file"
                     next_file = node_dir + row["movieid"]
                 else:
                     if int(movie_id) == int(row["movieid"]):
@@ -54,13 +60,15 @@ def method1_same_movie_idx(input_list):
                                 list_actors.append(row["actorid"])
                                 list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                         else:
-                            if  int(row["actorid"]) >= int(test_low) and int(row["actorid"] <= int(actor_high)) :
+                            if  int(row["actorid"]) >= int(test_low) and int(row["actorid"]) <= int(actor_high):
                                 list_actors.append(row["actorid"])
                                 list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                     else:
                         found = False
 
+    print next_file
     if found:
+        print "opening next file"
         with open(next_file, 'r') as leaf:
             leaf_node = csv.DictReader(leaf, delimiter = ",", fieldnames = ["movieid","actorid", "pageid"])
             page_count +=1
@@ -75,13 +83,13 @@ def method1_same_movie_idx(input_list):
                                     list_actors.append(row["actorid"])
                                     list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                             else:
-                                if  int(row["actorid"]) >= int(test_low) and int(row["actorid"] <= int(actor_high)) :
+                                if  int(row["actorid"]) >= int(test_low) and int(row["actorid"]) <= int(actor_high) :
                                     list_actors.append(row["actorid"])
                                     list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                                     
 
-    #print list_actors,page_count
-    return list_actors,page_count
+    print list_actors
+    return list(set(list_actors)),page_count
 
 
 def method1_range_movie_idx(input_list):
@@ -125,6 +133,9 @@ def method1_range_movie_idx(input_list):
                     next_file = node_dir + row["pageid"]
                     #print next_file
                 prev_id = int(row["movieid"])
+
+    prev_id = 0
+    #print "stem " + next_file
     with open(next_file, 'r') as stem:
         stem_node = csv.DictReader(stem,delimiter = ",", fieldnames = ["movieid","actorid","pageid"])
         page_count +=1
@@ -139,6 +150,7 @@ def method1_range_movie_idx(input_list):
                 prev_id = int(row["movieid"])
 
 
+    #print "leaf " + next_file 
     with open(next_file, 'r') as leaf:
         leaf_node = csv.DictReader(leaf, delimiter = ",", fieldnames = ["movieid","actorid", "pageid"])
         page_count +=1
@@ -154,7 +166,7 @@ def method1_range_movie_idx(input_list):
                                 list_actors.append(row["actorid"])
                                 list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                         else:
-                            if  int(row["actorid"]) >= int(test_low) and int(row["actorid"] <= int(actor_high)) :
+                            if  int(row["actorid"]) >= int(test_low) and int(row["actorid"]) <= int(actor_high) :
                                 list_actors.append(row["actorid"])
                                 list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                     else:
@@ -176,14 +188,15 @@ def method1_range_movie_idx(input_list):
                                     list_actors.append(row["actorid"])
                                     list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                             else:
-                                if  int(row["actorid"]) >= int(test_low) and int(row["actorid"] <= int(actor_high)) :
+                                if  int(row["actorid"]) >= int(test_low) and int(row["actorid"]) <= int(actor_high):
                                     list_actors.append(row["actorid"])
                                     list_actors_leaves.append([row["movieid"],row["actorid"], row["pageid"]])
                         else:
                             found = False
 
     #print list_actors,page_count
-    return list_actors,page_count
+
+    return list(set(list_actors)),page_count
 
 def method1_actor_idx(actor_list):
     output = []
@@ -206,7 +219,7 @@ def method1_actor_idx(actor_list):
 
 
 
-        for actor in  actor_list:
+        for idx, actor in  enumerate(actor_list):
             with open("actors_id_idx\\root.txt") as fin:
                 reader = csv.DictReader(fin, delimiter=",",fieldnames = ['id', 'pageid'])
                 next_file = ' '
@@ -225,18 +238,20 @@ def method1_actor_idx(actor_list):
                 reader = csv.DictReader(fin, delimiter=",",fieldnames = ['id', 'pageid'])
                 for row in reader:
                     if(row['id']!='leaf'):
-                        if(row['id'] in actor_list):
+                        if(row['id'] == actor_list[idx]):
                             actor_page_id.append([row['id'], row['pageid']])
 
             idx_page_count+=1
 
+
+        #print actor_page_id
         for idx, pages in enumerate(actor_page_id):
             tb_page_count+=1
             next_file = "actors_table\\page" + pages[1]+ '.txt'
             with open(next_file) as fin:
                 reader = csv.DictReader(fin, delimiter=",",fieldnames = ['atype', 'id', 'name', 'surname'])
                 for row in reader:
-                    if(row['id'] in actor_page_id[idx]):
+                    if(row['id'] == actor_page_id[idx][0]):
                         output.append(row)
 
 
@@ -285,8 +300,6 @@ def method3_movie_table(input_list):
     page_count = 0
     for i in range(1, 4018):
         page_count+=1
-        if(keep_going == 0):
-            break
         filename = "movieroles_table\\page" + str(i) + ".txt"
         with open(filename) as fin:
             reader = csv.DictReader(fin, delimiter=",",fieldnames = ['actorid', 'info_1', 'info_2', 'movieid', 'role'])
@@ -294,8 +307,6 @@ def method3_movie_table(input_list):
                 if(int(row['movieid']) in range(movie_test_low, movie_test_high+1)):
                     if(int(row['actorid']) in range(actor_test_low, actor_test_high+1)):
                         list_actors.append(row['actorid'])
-                if int(row['movieid']) < movie_test_high:
-                    keep_going = 0
 
 
     return page_count
@@ -344,7 +355,7 @@ if __name__ == '__main__':
         actor_info_list, a_idx_page, a_table_page = method1_actor_idx(actor_list)
 
         print "Query: " + line
-        print "Results:\n"
+        print "Results (" + str(len(actor_info_list))  +  " total):\n"
         for actor in actor_info_list:
             print actor['name'] + " " + actor['surname'] + "(" + actor['atype'] + ")"
         print
@@ -352,7 +363,7 @@ if __name__ == '__main__':
         a_table_page = 0
         temp_actor_page = method2_actor_table(actor_list)
         print_output(2,m_idx_page,m_table_page,0,temp_actor_page)
-        print_output(3,0, method3_movie_table(input_list), 0, temp_actor_page)
+        #print_output(3,0, method3_movie_table(input_list), 0, temp_actor_page)
         
 
 
