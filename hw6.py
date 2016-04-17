@@ -159,7 +159,7 @@ def method1_range_movie_idx(input_list):
                 if not (row["movieid"].isdigit()) :
                     next_file = node_dir + row["movieid"]
                 else:
-                    if int(row["movieid"]) in range(int(movie_test_low),int(movie_test_high) +1):
+                    if int(row["movieid"]) >= int(movie_test_low) and int(row["movieid"]) <= (int(movie_test_high) +1):
                         found = True
                         if  actor_high == "*":
                             if  int(row["actorid"]) >= int(test_low):
@@ -183,7 +183,7 @@ def method1_range_movie_idx(input_list):
                         next_found = True
                         next_file = node_dir + row["movieid"]
                     else:
-                        if int(row["movieid"]) in range(int(movie_test_low),int(movie_test_high) +1):
+                        if int(row["movieid"]) >= int(movie_test_low) and int(row["movieid"]) <= (int(movie_test_high) +1):
                             found = True
                             if  actor_high == "*":
                                 if  int(row["actorid"]) >= int(test_low):
@@ -366,7 +366,7 @@ if __name__ == '__main__':
         a_table_page = 0
         temp_actor_page = method2_actor_table(actor_list)
         print_output(2,m_idx_page,m_table_page,0,temp_actor_page)
-        #print_output(3,0, method3_movie_table(input_list), 0, temp_actor_page)
+        print_output(3,0, method3_movie_table(input_list), 0, temp_actor_page)
         
 
 
