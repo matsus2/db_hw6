@@ -334,6 +334,7 @@ def print_output(method_number,num_movieroles_idx,num_movieroles_table,num_actor
 
 
 if __name__ == '__main__':
+    #sys.stdout = open('example_output.txt', 'w')
     if(len(sys.argv) != 2):
         print("incorrect amount of arguments")
         sys.exit(0)
@@ -370,6 +371,7 @@ if __name__ == '__main__':
         temp_actor_page = method2_actor_table(actor_list)
         print_output(2,m_idx_page,m_table_page,0,temp_actor_page)
         print_output(3,0, method3_movie_table(input_list), 0, temp_actor_page)
+        print '***********************************************************'
         
 
 
